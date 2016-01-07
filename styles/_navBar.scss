@@ -1,0 +1,60 @@
+.navBar {
+	background-color: #E3EAF0;
+	overflow: hidden;
+	padding: 0.25em;
+	padding-bottom: 0em;
+	margin: 0;
+	margin-left: -10px;
+	width: 101%;
+
+	img {
+		float: left;
+		background-color: green;
+		width: 3em;
+		border: 1px solid #000;
+		border-radius: 10px;
+		margin-bottom: 4px;
+	}
+
+	#title {
+		display: block;
+		float: left;
+		margin-top: 0.25em;
+		margin-left: -1.5em;
+		font-size: 22px;
+		font-family: 'Abril Fatface', cursive;
+
+		a {
+			text-decoration: none;
+			color: #7390A8;
+		}
+	}
+
+	ul {
+		list-style-type: none;
+		margin-top: 0.75em;
+
+		li {
+			display: inline-block;
+
+			a {
+				text-decoration: none;
+				color: #7390A8;
+				padding: 0.5em 0.25em;
+				font-family: 'Abril Fatface', cursive;
+			}
+		}
+
+		li:last-of-type {
+
+			a {
+				margin-right: 1em;
+			}
+		}
+	}
+
+	#navBarListRight {
+		float: right;
+	}
+
+}

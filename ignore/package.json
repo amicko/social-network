@@ -1,0 +1,26 @@
+{
+  "name": "social-network",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^4.0.1",
+    "grunt-contrib-connect": "^0.11.2",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-sass": "^0.9.2",
+    "grunt-contrib-uglify": "^0.11.0",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aaron",
+  "license": "ISC",
+  "dependencies": {
+    "backbone": "^1.2.3",
+    "jquery": "^2.1.4",
+    "react": "^0.14.5",
+    "react-dom": "^0.14.5"
+  }
+}

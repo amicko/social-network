@@ -1,0 +1,228 @@
+.homepage {
+	clear: both;
+	background-color: #E3EAF0;
+
+	#heroBanner {
+		width: 100%;
+		height: 15em;
+		background-image: url("http://g03.a.alicdn.com/kf/HTB1CAr_IpXXXXc8XFXXq6xXFXXXt/5-Panel-Framed-Printed-Animals-font-b-Lion-b-font-Group-Painting-children-s-room-decor.jpg");
+		background-repeat: no-repeat;
+		background-size: 110% 125%;
+		background-position: center;
+	}
+
+	#intro {
+		width: 300px;
+		margin: 0 auto;
+
+		h2 {
+			color: #7390A8;
+			font-size: 18px;
+		}
+
+		p {
+			color: #7390A8;
+			padding-bottom: 1em;
+			font-size: 12px;
+		}
+	}
+
+	hr {
+		margin-bottom: 1em;
+		width: 90%;
+	}
+
+	#features {
+		padding-bottom: 12px;
+
+		.featureBox {
+			width: 300px;
+			margin: 0 auto;
+			background-color: #DDDDDD;
+			// padding-left: 1em;
+			text-align: center;
+
+			img {
+				width: 15em;
+				// margin-left: 30px;
+				margin-top: 10px;
+				margin-bottom: -30px;
+			}
+
+			h3 {
+				color: #7390A8;
+				font-size: 18px;
+				padding-top: 1em;
+			}
+
+			p {
+				color: #7390A8;
+				font-size: 12px;
+				padding-bottom: 1em;
+			}
+		}
+	}
+
+	footer {
+		background-color: #3A414B;
+		// height: 10em;
+
+		ul {
+			list-style-type: none;
+			text-align: center;
+			margin-left: -3em;
+
+			li {
+				display: inline-block;
+				padding: 2.5em 1em;
+
+				a {
+					text-decoration: none;
+					color: #fff;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 480px) {
+	.homepage {
+
+		#heroBanner {
+			width: 100%;
+			height: 23em;
+			background-image: url("http://g03.a.alicdn.com/kf/HTB1CAr_IpXXXXc8XFXXq6xXFXXXt/5-Panel-Framed-Printed-Animals-font-b-Lion-b-font-Group-Painting-children-s-room-decor.jpg");
+			background-repeat: no-repeat;
+			background-size: 110% 120%;
+			background-position: center;
+		}
+
+		#intro {
+			width: 500px;
+
+			h2 {
+				font-size: 24px;
+			}
+
+			p {
+				font-size: 14px;
+			}
+		}
+
+		hr {
+
+		}
+
+		#features {
+			box-sizing: border-box;
+			margin-left: 7.5%;
+
+			.featureBox {
+				width: 30%;
+				display: inline-block;
+				margin: 0.25em;
+				padding: 0;
+
+				img {
+					width: 100%;
+					height: 180px;
+					margin: 0;
+					padding: 0;
+				}
+
+				h3 {
+					margin: 0;
+					padding: 0;
+				}
+
+				p {
+					margin: 0;
+					padding: 0;
+				}
+			}
+		}
+
+		footer {
+
+
+			ul {
+
+
+				li {
+
+
+					a {
+
+					}
+				}
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 900px) {
+	body {
+		background-color: #4C4743;
+		margin-top: 0;
+
+		.homepage {
+			width: 90%;
+			margin: 0 auto;
+
+			#heroBanner {
+				height: 28em;
+			}
+
+			#intro {
+
+				h2 {
+
+				}
+
+				p {
+
+				}
+			}
+
+			hr {
+
+			}
+
+			#features {
+
+
+				.featureBox {
+
+
+					img {
+
+					}
+
+					h3 {
+
+					}
+
+					p {
+
+					}
+				}
+			}
+
+			footer {
+
+
+				ul {
+
+
+					li {
+
+
+						a {
+
+						}
+					}
+				}
+			}
+		}
+	}
+}
