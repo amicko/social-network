@@ -11,11 +11,19 @@ var main = document.getElementById('main');
 var NavComponent = require('./components/NavComponent.js');
 var HomeComponent = require('./components/HomeComponent.js');
 var RegisterComponent = require('./components/RegisterComponent.js');
+var LoginComponent = require('./components/LoginComponent.js');
+var ProfileComponent = require('./components/ProfileComponent.js');
+var UserSettingsComponent = require('./components/UserSettingsComponent.js');
+var MessageCenterComponent = require('./components/MessageCenterComponent.js');
 
 var Router = Backbone.Router.extend({
 	routes: {
 		'' : 'home',
-		'register' : 'register'
+		'register' : 'register',
+		'login' : 'login',
+		'profile/:userId' : 'profile',
+		'user-settings/:userId' : 'userSettings',
+		'message-center/:userId' : 'messageCenter'
 	},
 	home: function() {
 		ReactDOM.render(<NavComponent router={this}/>, nav)
@@ -24,8 +32,46 @@ var Router = Backbone.Router.extend({
 	register: function() {
 		ReactDOM.render(<NavComponent router={this}/>, nav)
 		ReactDOM.render(<RegisterComponent router={this}/>, main)
+	},
+	login: function() {
+		ReactDOM.render(<NavComponent router={this}/>, nav)
+		ReactDOM.render(<LoginComponent router={this}/>, main)
+	},
+	profile: function(userId) {
+		ReactDOM.render(<NavComponent router={this}/>, nav)
+		ReactDOM.render(<ProfileComponent router={this} profile={userId} user={Parse.User.current()}/>, main)
+	},
+	userSettings: function(userId) {
+		ReactDOM.render(<NavComponent router={this}/>, nav)
+		ReactDOM.render(<UserSettingsComponent router={this} profile={userId}/>, main)
+	},
+	messageCenter: function(userId) {
+		ReactDOM.render(<NavComponent router={this}/>, nav)
+		ReactDOM.render(<MessageCenterComponent router={this} profile={userId}/>, main)
 	}
 });
 
 var r = new Router();
 Backbone.history.start();
+
+function getRandom(min, max) {
+	return Math.random() * (max - min) + min;
+}
+
+function getRandomSeries() {
+	var number = Math.round(getRandom(1, 3));
+	if(number == 1) {
+		return 'The Next Generation'
+	}
+	else if(number == 2) {
+		return 'Deep Space Nine'
+	}
+	else if(number == 3) {
+		return 'Voyager'
+	}
+}
+
+var getRandomSeason = getRandom(1, 7);
+var getRandomEpisode = getRandom(1, 26);
+
+console.log('Series: ' + getRandomSeries() +' Season ' + Math.round(getRandomSeason) + ' Episode ' + Math.round(getRandomEpisode))

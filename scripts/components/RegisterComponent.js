@@ -210,10 +210,13 @@ module.exports = React.createClass({
 			var user = new Parse.User();
 			user.signUp(
 				{
-					username: this.refs.firstName.value + ' ' + this.refs.lastName.value,
+					username: this.refs.email.value,
+					userLegalName: this.refs.firstName.value.toLowerCase() + ' ' + this.refs.lastName.value.toLowerCase(),
 					password: this.refs.password1.value,
 					email: this.refs.email.value,
-					birthDate: this.refs.birthMonth.value + '/' + this.refs.birthDay.value + '/' + this.refs.birthYear.value
+					birthDate: this.refs.birthMonth.value + '/' + this.refs.birthDay.value + '/' + this.refs.birthYear.value,
+					profilePicture: 'http://i.istockimg.com/file_thumbview_approve/62689222/3/stock-illustration-62689222-lion-head-silhouette.jpg',
+					friends: ['aaron micko']
 				},
 				{
 					success: (u) => {

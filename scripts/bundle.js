@@ -31856,47 +31856,723 @@ var React = require('react');
 module.exports = React.createClass({
 	displayName: "exports",
 
+	getInitialState: function getInitialState() {
+		return {
+			error: null
+		};
+	},
 	render: function render() {
+		var errorElement = null;
+		if (this.state.error) {
+			errorElement = React.createElement(
+				"div",
+				{ id: "loginErrorMessage" },
+				this.state.error
+			);
+		}
 		return React.createElement(
 			"div",
-			{ className: "navBar" },
-			React.createElement("img", { src: "http://www.mma-hk.cz/image/data/mma-logo-lev.png" }),
+			{ className: "login" },
 			React.createElement(
-				"span",
-				{ id: "title" },
+				"div",
+				{ id: "welcomeBox" },
 				React.createElement(
-					"a",
-					{ href: "#" },
-					"The Lion's Den"
-				)
-			),
-			React.createElement(
-				"ul",
-				{ id: "navBarListRight" },
-				React.createElement(
-					"li",
+					"h2",
 					null,
-					React.createElement(
-						"a",
-						{ href: "#register" },
-						"Register"
-					)
+					"Welcome back to the Lion's Den!"
 				),
 				React.createElement(
-					"li",
+					"p",
 					null,
-					React.createElement(
-						"a",
-						{ href: "#" },
-						"Login"
-					)
+					"To rejoin the pride, simply fill out the following questions."
+				)
+			),
+			React.createElement("hr", null),
+			React.createElement(
+				"form",
+				{ id: "loginForm", onSubmit: this.onLogin },
+				React.createElement(
+					"label",
+					{ className: "loginLabel" },
+					"Your Email"
+				),
+				React.createElement("input", { className: "loginInput", id: "loginEmail", ref: "email", type: "email" }),
+				React.createElement(
+					"label",
+					{ className: "loginLabel" },
+					"Your Password"
+				),
+				React.createElement("input", { className: "loginInput", id: "loginPassword1", ref: "password", type: "password" }),
+				errorElement,
+				React.createElement(
+					"button",
+					{ id: "loginBtn" },
+					"Login"
 				)
 			)
 		);
+	},
+	onLogin: function onLogin(e) {
+		e.preventDefault();
+		// var userDate = this.refs.birthMonth.value + '/' + this.refs.birthDay.value + '/' + this.refs.birthYear.value;
+		// var currentDate = new Date();
+		// var month = currentDate.getMonth()+1;
+		// var day = currentDate.getDate();
+		// var year = currentDate.getFullYear();
+		// currentDate = month + '/' + day + '/' + year;
+		// if(userDate == currentDate) {
+		// 	console.log(true);
+		// }
+		// else {
+		// 	console.log(false);
+		// }
+		var that = this;
+		if (this.refs.email.value == false) {
+			this.setState({
+				error: 'You must enter an Email'
+			});
+		} else if (this.refs.password.value == false) {
+			this.setState({
+				error: 'You must enter a Password'
+			});
+		} else {
+			this.setState({
+				error: null
+			});
+			var user = new Parse.User();
+			Parse.User.logIn(this.refs.email.value, this.refs.password.value, {
+				success: function success(user) {
+					console.log(Parse.User.current().id);
+					that.props.router.navigate('profile/' + Parse.User.current().get('userLegalName').toLowerCase().split(' ').join('.'), { trigger: true });
+				},
+				error: function error(user, _error) {
+					this.setState({
+						error: _error.message
+					});
+				}
+			});
+		}
 	}
 });
 
 },{"react":160}],164:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
+module.exports = React.createClass({
+	displayName: 'exports',
+
+	getInitialState: function getInitialState() {
+		return {
+			friendRequests: []
+		};
+	},
+	componentWillMount: function componentWillMount() {
+		var _this = this;
+
+		var MessageModel = Parse.Object.extend('MessageModel');
+		var MessageQuery = new Parse.Query(MessageModel);
+		var ProfileOwner = this.props.profile.split('.').join(' ');
+
+		MessageQuery.equalTo('messageType', 'friendRequest').equalTo('receiver', Parse.User.current().get('userLegalName')).equalTo('accepted', false).find().then(function (requests) {
+			_this.setState({
+				friendRequests: requests
+			});
+			// console.log(requests)
+		});
+	},
+	render: function render() {
+		var _this2 = this;
+
+		var friendRequests = this.state.friendRequests.map(function (request, index) {
+			return React.createElement(
+				'div',
+				{ className: 'friendRequestBox', key: index },
+				React.createElement(
+					'div',
+					{ className: 'friendRequestSender' },
+					request.get('sender').split('.').map(function (s) {
+						return s.charAt(0).toUpperCase() + s.slice(1);
+					}).join(' ')
+				),
+				React.createElement(
+					'button',
+					{ onClick: _this2.onFriendRequestAccept.bind(_this2, request), key: index },
+					'Accept'
+				),
+				React.createElement(
+					'button',
+					null,
+					'Decline'
+				)
+			);
+		});
+		return React.createElement(
+			'div',
+			{ className: 'messageCenter' },
+			'Message Center',
+			friendRequests
+		);
+	},
+	onFriendRequestAccept: function onFriendRequestAccept(request) {
+		// console.log(request.get('sender'));
+		var UserModel = Parse.Object.extend('_User');
+		var UserQuery = new Parse.Query(UserModel);
+
+		request.set('accepted', true);
+		request.set('pending', false);
+		request.save(null, {
+			success: function success() {
+				console.log('New Friend Added to Sender On Server');
+			}
+		});
+
+		UserQuery.equalTo('userLegalName', request.get('sender')).find().then(function (sender) {
+			var newFriends = sender[0].get('friends').concat(request.get('receiver'));
+			sender[0].set('friends', newFriends);
+			sender[0].save(null, {
+				success: function success() {
+					console.log('New Friend Added to Sender On Server');
+				}
+			});
+			Parse.User.current().set('friends', Parse.User.current().get('friends').concat(request.get('sender')));
+			Parse.User.current().save(null, {
+				success: function success(CharacterModel) {
+					console.log('New Friend Added to Receiver On Server');
+				}
+			});
+			// console.log(sender[0].get('friends').concat(request.get('receiver')));
+			// console.log(Parse.User.current().get('friends').concat(request.get('sender')));
+		});
+	}
+});
+
+},{"react":160}],165:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		if (!Parse.User.current()) {
+			return React.createElement(
+				"div",
+				{ className: "navBar" },
+				React.createElement("img", { src: "http://www.mma-hk.cz/image/data/mma-logo-lev.png" }),
+				React.createElement(
+					"span",
+					{ id: "title" },
+					React.createElement(
+						"a",
+						{ href: "#" },
+						"The Lion's Den"
+					)
+				),
+				React.createElement(
+					"ul",
+					{ id: "navBarListRight" },
+					React.createElement(
+						"li",
+						null,
+						React.createElement(
+							"a",
+							{ href: "#register" },
+							"Register"
+						)
+					),
+					React.createElement(
+						"li",
+						null,
+						React.createElement(
+							"a",
+							{ href: "#login" },
+							"Login"
+						)
+					)
+				)
+			);
+		} else {
+			return React.createElement(
+				"div",
+				{ className: "navBar" },
+				React.createElement("img", { src: "http://www.mma-hk.cz/image/data/mma-logo-lev.png" }),
+				React.createElement(
+					"span",
+					{ id: "title" },
+					React.createElement(
+						"a",
+						{ href: "#" },
+						"The Lion's Den"
+					)
+				),
+				React.createElement(
+					"ul",
+					{ id: "navBarListRight" },
+					React.createElement(
+						"li",
+						null,
+						React.createElement(
+							"a",
+							{ href: '#profile/' + Parse.User.current().get('userLegalName').toLowerCase().split(' ').join('.'), onClick: this.onProfileClick },
+							"Profile"
+						)
+					),
+					React.createElement(
+						"li",
+						null,
+						React.createElement(
+							"a",
+							{ href: '#message-center/' + Parse.User.current().id },
+							"Messages"
+						)
+					),
+					React.createElement(
+						"li",
+						null,
+						React.createElement(
+							"a",
+							{ href: '#user-settings/' + Parse.User.current().id },
+							"Settings"
+						)
+					),
+					React.createElement(
+						"li",
+						null,
+						React.createElement(
+							"a",
+							{ href: "#", onClick: this.onLogout },
+							"Logout"
+						)
+					)
+				)
+			);
+		}
+	},
+	onLogout: function onLogout() {
+		Parse.User.logOut();
+	},
+	onProfileClick: function onProfileClick() {
+		document.location.reload(true);
+	}
+});
+
+},{"react":160}],166:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
+module.exports = React.createClass({
+	displayName: 'exports',
+
+	getInitialState: function getInitialState() {
+		return {
+			user: [],
+			friends: [],
+			posts: [],
+			newPost: 'newPostHide',
+			newPostText: 'newPostTextHide',
+			newPostImageUpload: 'newPostImageUploadHide',
+			newPostImageURL: 'newPostImageURLHide',
+			isFriend: false
+		};
+	},
+	componentWillMount: function componentWillMount() {
+		var _this = this;
+
+		var UserModel = Parse.Object.extend('_User');
+		var PostsModel = Parse.Object.extend('PostsClass');
+		var UserQuery = new Parse.Query(UserModel);
+		var PostsQuery = new Parse.Query(PostsModel);
+		var ProfileOwner = this.props.profile.split('.').join(' ');
+		var UserName = this.props.profile.split('.').map(function (s) {
+			return s.charAt(0).toUpperCase() + s.slice(1);
+		}).join(' ');
+		var that = this;
+
+		UserQuery.equalTo('userLegalName', ProfileOwner).find().then(function (user) {
+			user[0].get('friends').map(function (friend) {
+				UserQuery.equalTo('userLegalName', friend).find().then(function (eachFriend) {
+					_this.setState({
+						user: user,
+						friends: that.state.friends.concat(eachFriend)
+					});
+				});
+			});
+		});
+
+		PostsQuery.equalTo('postUserName', ProfileOwner).descending('createdAt').find().then(function (posts) {
+			_this.setState({
+				posts: posts
+			});
+		});
+		var userFriends = Parse.User.current().get('friends').map(function (friend) {
+			if (friend === ProfileOwner) {
+				_this.setState({
+					isFriend: true
+				});
+			}
+		});
+	},
+	render: function render() {
+		var _this2 = this;
+
+		// console.log(this.state.friends);
+		var UserPosts = this.state.posts.map(function (post, index) {
+			if (post.get('postType') == 'text') {
+				return React.createElement(
+					'div',
+					{ className: 'post', key: index },
+					React.createElement('img', { className: 'postThumb', src: post.get('postUserImage') }),
+					React.createElement(
+						'h3',
+						{ className: 'postPoster' },
+						post.get('postUserName').split(' ').map(function (s) {
+							return s.charAt(0).toUpperCase() + s.slice(1);
+						}).join(' ')
+					),
+					React.createElement(
+						'p',
+						{ className: 'postCaption' },
+						post.get('textContent')
+					)
+				);
+			} else if (post.get('postType') == 'imageURL') {
+				return React.createElement(
+					'div',
+					{ className: 'post', key: index },
+					React.createElement('img', { className: 'postThumb', src: post.get('postUserImage') }),
+					React.createElement(
+						'h3',
+						{ className: 'postPoster' },
+						post.get('postUserName').split(' ').map(function (s) {
+							return s.charAt(0).toUpperCase() + s.slice(1);
+						}).join(' ')
+					),
+					React.createElement('img', { className: 'postImage', src: post.get('imageURLContent') })
+				);
+			}
+		});
+		var UserProfilePicture = this.state.user.map(function (user) {
+			return user.get('profilePicture');
+		});
+		var UserName = this.state.user.map(function (user) {
+			var newUserName = user.get('userLegalName').split(' ').map(function (s) {
+				return s.charAt(0).toUpperCase() + s.slice(1);
+			}).join(' ');
+			return newUserName;
+		});
+		var UserAboutMe = this.state.user.map(function (user) {
+			return user.get('aboutMe');
+		});
+		var Friends = this.state.friends.map(function (friend, index) {
+			return React.createElement(
+				'a',
+				{ href: '#profile/' + friend.get('userLegalName').split(' ').join('.'), key: index },
+				React.createElement('img', { className: 'friendPic', key: index, onClick: _this2.onFriendClick.bind(_this2, friend), src: friend.get('profilePicture') })
+			);
+		});
+
+		var FriendCount = this.state.friends.length;
+
+		var addPostButton = null;
+
+		if (Parse.User.current().get('userLegalName') !== this.props.profile.split('.').join(' ')) {
+			addPostButton = null;
+		} else {
+			addPostButton = React.createElement(
+				'button',
+				{ className: 'newPostButton', onClick: this.onNewPost },
+				'Add New Post'
+			);
+		}
+
+		var addFriendButton = null;
+		if (!this.state.isFriend) {
+			addFriendButton = React.createElement(
+				'button',
+				{ id: 'addFriend', onClick: this.onAddFriend },
+				'Add Friend'
+			);
+		} else {
+			addFriendButton = React.createElement(
+				'button',
+				{ id: 'addFriend', disabled: true },
+				'Already Friends'
+			);
+		}
+		return React.createElement(
+			'div',
+			{ className: 'profile' },
+			React.createElement(
+				'section',
+				{ id: 'header' },
+				React.createElement('img', { className: 'profilePic', src: UserProfilePicture }),
+				React.createElement(
+					'div',
+					{ id: 'userName' },
+					UserName
+				)
+			),
+			addFriendButton,
+			React.createElement(
+				'section',
+				{ id: 'leftProfile' },
+				React.createElement(
+					'div',
+					{ id: 'aboutMe' },
+					React.createElement(
+						'span',
+						{ className: 'aboutMeSpan' },
+						'About me: '
+					),
+					React.createElement('br', null),
+					UserAboutMe
+				),
+				React.createElement(
+					'div',
+					{ id: 'friends' },
+					React.createElement(
+						'span',
+						{ className: 'friendsSpan' },
+						'Friends(',
+						FriendCount,
+						'): '
+					),
+					React.createElement('br', null),
+					Friends
+				)
+			),
+			React.createElement(
+				'section',
+				{ id: 'rightProfile' },
+				addPostButton,
+				React.createElement(
+					'div',
+					{ className: this.state.newPost },
+					React.createElement(
+						'button',
+						{ id: 'newPostText', onClick: this.onNewPostText },
+						'Text'
+					),
+					React.createElement(
+						'button',
+						{ id: 'imageURL', onClick: this.onNewPostImageURL },
+						'Link an Image'
+					),
+					React.createElement(
+						'button',
+						{ onClick: this.onCancel },
+						'Cancel'
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: this.state.newPostText },
+					React.createElement('textarea', { ref: 'newPostTextArea', placeholder: 'Add text here!', className: 'newPostTextArea' }),
+					React.createElement(
+						'button',
+						{ onClick: this.onSubmitNewPostText },
+						'Add Post'
+					),
+					React.createElement(
+						'button',
+						{ onClick: this.onCancel },
+						'Cancel'
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: this.state.newPostImageUpload },
+					React.createElement('input', { type: 'file', id: 'imageUpload' }),
+					React.createElement(
+						'button',
+						{ id: 'fakeImageUpload' },
+						'Choose Image'
+					),
+					React.createElement(
+						'button',
+						{ className: 'underImageBtn', ref: 'ImageUploadValue', onClick: this.onSubmitNewPostImageUpload },
+						'Add Image'
+					),
+					React.createElement(
+						'button',
+						{ className: 'underImageBtn', onClick: this.onCancel },
+						'Cancel'
+					),
+					React.createElement('img', { id: 'uploadExample', src: '' })
+				),
+				React.createElement(
+					'div',
+					{ className: this.state.newPostImageURL },
+					React.createElement('input', { id: 'imageURL', ref: 'imageURL', type: 'text', placeholder: 'Add a URL here!' }),
+					React.createElement(
+						'button',
+						{ className: 'underImageBtn', onClick: this.onSubmitImageURL },
+						'Add Image'
+					),
+					React.createElement(
+						'button',
+						{ className: 'underImageBtn', onClick: this.onCancel },
+						'Cancel'
+					)
+				),
+				UserPosts
+			)
+		);
+	},
+	onAddFriend: function onAddFriend() {
+		// console.log(Parse.User.current().get('userLegalName'));
+		var ProfileOwner = this.props.profile.split('.').join(' ');
+		var MessageModel = Parse.Object.extend('MessageModel');
+		var AddFriend = new MessageModel({
+			messageType: 'friendRequest',
+			sender: Parse.User.current().get('userLegalName'),
+			receiver: ProfileOwner,
+			accepted: false,
+			pending: true
+		}).save(null, {
+			success: function success(post) {
+				// Execute any logic that should take place after the object is saved.
+				console.log('Friend Request Sent');
+			},
+			error: function error(post, _error) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+			}
+		});
+	},
+	onFriendClick: function onFriendClick() {
+		document.location.reload(true);
+	},
+	onNewPost: function onNewPost() {
+		this.setState({
+			newPost: 'newPostShow',
+			newPostText: 'newPostTextHide',
+			newPostImageUpload: 'newPostImageUploadHide',
+			newPostImageURL: 'newPostImageURLHide'
+		});
+	},
+	onNewPostText: function onNewPostText() {
+		this.setState({
+			newPost: 'newPostHide',
+			newPostText: 'newPostTextShow'
+		});
+	},
+	onSubmitNewPostText: function onSubmitNewPostText() {
+		var PostsModel = Parse.Object.extend('PostsClass');
+		var PostsQuery = new Parse.Query(PostsModel);
+		var ProfileOwner = this.props.profile.split('.').join(' ');
+		var UserProfilePicture = this.state.user.map(function (user) {
+			return user.get('profilePicture');
+		});
+		var that = this;
+		var UserName = this.props.profile.split('.').join(' ');
+		var PostsClass = Parse.Object.extend('PostsClass');
+		var NewPost = new PostsClass({
+			postType: 'text',
+			textContent: this.refs.newPostTextArea.value,
+			postUserImage: UserProfilePicture[0],
+			postUserName: UserName,
+			postUser: Parse.User.current()
+		}).save(null, {
+			success: function success(post) {
+				// Execute any logic that should take place after the object is saved.
+				that.setState({
+					newPost: 'newPostHide',
+					newPostText: 'newPostTextHide'
+				});
+				PostsQuery.equalTo('postUserName', ProfileOwner).descending('createdAt').find().then(function (posts) {
+					that.setState({
+						posts: posts
+					});
+				});
+				that.refs.newPostTextArea.value = null;
+			},
+			error: function error(post, _error2) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+			}
+		});
+	},
+	onNewPostImageUpload: function onNewPostImageUpload() {
+		this.setState({
+			newPost: 'newPostHide',
+			newPostImageUpload: 'newPostImageUploadShow'
+		});
+	},
+	onSubmitNewPostImageUpload: function onSubmitNewPostImageUpload() {
+		var UserProfilePicture = this.state.user.map(function (user) {
+			return user.get('profilePicture');
+		});
+		var UserName = this.state.user.map(function (user) {
+			var newUserName = user.get('userLegalName').split(' ').map(function (s) {
+				return s.charAt(0).toUpperCase() + s.slice(1);
+			}).join(' ');
+			return newUserName;
+		});
+		// var PostsClass = Parse.Object.extend('PostsClass');
+		// var NewPost = new PostsClass({
+		// 	postType: 'imageFile',
+		// 	imageFileContent: this.refs.ImageUploadValue.value,
+		// 	postUserImage: UserProfilePicture[0],
+		// 	postUserName: UserName[0]
+		// }).save()
+	},
+	onNewPostImageURL: function onNewPostImageURL() {
+		this.setState({
+			newPost: 'newPostHide',
+			newPostImageURL: 'newPostImageURLShow'
+		});
+	},
+	onSubmitImageURL: function onSubmitImageURL() {
+		var PostsModel = Parse.Object.extend('PostsClass');
+		var PostsQuery = new Parse.Query(PostsModel);
+		var ProfileOwner = this.props.profile.split('.').join(' ');
+		var that = this;
+		var UserProfilePicture = this.state.user.map(function (user) {
+			return user.get('profilePicture');
+		});
+		var UserName = this.props.profile.split('.').join(' ');
+		var PostsClass = Parse.Object.extend('PostsClass');
+		var NewPost = new PostsClass({
+			postType: 'imageURL',
+			imageURLContent: this.refs.imageURL.value,
+			postUserImage: UserProfilePicture[0],
+			postUserName: UserName
+		}).save(null, {
+			success: function success(post) {
+				// Execute any logic that should take place after the object is saved.
+				that.setState({
+					newPost: 'newPostHide',
+					newPostImageURL: 'newPostImageURLHide'
+				});
+				PostsQuery.equalTo('postUserName', ProfileOwner).descending('createdAt').find().then(function (posts) {
+					that.setState({
+						posts: posts
+					});
+				});
+				that.refs.imageURL.value = null;
+			},
+			error: function error(post, _error3) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+			}
+		});
+	},
+	onCancel: function onCancel() {
+		this.setState({
+			newPost: 'newPostHide',
+			newPostText: 'newPostTextHide',
+			newPostImageUpload: 'newPostImageUploadHide',
+			newPostImageURL: 'newPostImageURLHide'
+		});
+	}
+});
+
+},{"react":160}],167:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -32612,10 +33288,13 @@ module.exports = React.createClass({
 			});
 			var user = new Parse.User();
 			user.signUp({
-				username: this.refs.firstName.value + ' ' + this.refs.lastName.value,
+				username: this.refs.email.value,
+				userLegalName: this.refs.firstName.value.toLowerCase() + ' ' + this.refs.lastName.value.toLowerCase(),
 				password: this.refs.password1.value,
 				email: this.refs.email.value,
-				birthDate: this.refs.birthMonth.value + '/' + this.refs.birthDay.value + '/' + this.refs.birthYear.value
+				birthDate: this.refs.birthMonth.value + '/' + this.refs.birthDay.value + '/' + this.refs.birthYear.value,
+				profilePicture: 'http://i.istockimg.com/file_thumbview_approve/62689222/3/stock-illustration-62689222-lion-head-silhouette.jpg',
+				friends: ['aaron micko']
 			}, {
 				success: function success(u) {},
 				error: function error(u, _error) {
@@ -32628,7 +33307,112 @@ module.exports = React.createClass({
 	}
 });
 
-},{"react":160}],165:[function(require,module,exports){
+},{"react":160}],168:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "userSettings" },
+			React.createElement(
+				"h2",
+				null,
+				"User Settings"
+			),
+			React.createElement(
+				"div",
+				{ id: "userSettingsForm" },
+				React.createElement(
+					"label",
+					{ className: "userSettingsLabel" },
+					"Email"
+				),
+				React.createElement("input", { ref: "Email", id: "settingEmail", type: "email", placeholder: Parse.User.current().get('email') }),
+				React.createElement(
+					"button",
+					{ className: "userSettingsButton", onClick: this.onChangeEmail },
+					"Change Email"
+				),
+				React.createElement(
+					"label",
+					{ className: "userSettingsLabel" },
+					"Profile Picture"
+				),
+				React.createElement("input", { ref: "ProfilePic", id: "settingProfilePic", type: "text", placeholder: Parse.User.current().get('profilePicture') }),
+				React.createElement(
+					"button",
+					{ className: "userSettingsButton", onClick: this.onChangeProfilePic },
+					"Change Profile Picture"
+				),
+				React.createElement(
+					"label",
+					{ className: "userSettingsLabel" },
+					"About Me"
+				),
+				React.createElement("textarea", { ref: "AboutMe", id: "settingAboutMe", placeholder: Parse.User.current().get('aboutMe') }),
+				React.createElement(
+					"button",
+					{ className: "userSettingsButton", onClick: this.onChangeAboutMe },
+					"Change About Me"
+				)
+			)
+		);
+	},
+	onChangeName: function onChangeName() {
+		console.log('Name Changed');
+		Parse.User.current().set('userLegalName', this.refs.UserName.value.toLowerCase());
+		Parse.User.current().save(null, {
+			success: function success(CharacterModel) {
+				console.log('User Name Changed On Server');
+			}
+		});
+	},
+	onChangeEmail: function onChangeEmail() {
+		console.log('Email Changed');
+		Parse.User.current().set('username', this.refs.Email.value);
+		Parse.User.current().save(null, {
+			success: function success(CharacterModel) {
+				console.log('User Name Changed On Server');
+			}
+		});
+		Parse.User.current().set('email', this.refs.Email.value);
+		Parse.User.current().save(null, {
+			success: function success(CharacterModel) {
+				console.log('User Name Changed On Server');
+			}
+		});
+	},
+	onChangeProfilePic: function onChangeProfilePic() {
+		console.log('Profile Picture Changed');
+		Parse.User.current().set('profilePicture', this.refs.ProfilePic.value);
+		Parse.User.current().save(null, {
+			success: function success(CharacterModel) {
+				console.log('Profile Picture Changed On Server');
+			}
+		});
+	},
+	onChangeAboutMe: function onChangeAboutMe() {
+		console.log('About Me Changed');
+		Parse.User.current().set('aboutMe', this.refs.AboutMe.value);
+		Parse.User.current().save(null, {
+			success: function success(CharacterModel) {
+				console.log('About Me Changed On Server');
+			}
+		});
+	}
+});
+
+// <label className="userSettingsLabel">User Name</label>
+// <input ref="UserName" id="settingUserName" type="text" placeholder={Parse.User.current().get('userLegalName').split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')}/>
+// <button className="userSettingsButton" onClick={this.onChangeName}>Change User Name</button>
+//
+
+},{"react":160}],169:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -32644,11 +33428,19 @@ var main = document.getElementById('main');
 var NavComponent = require('./components/NavComponent.js');
 var HomeComponent = require('./components/HomeComponent.js');
 var RegisterComponent = require('./components/RegisterComponent.js');
+var LoginComponent = require('./components/LoginComponent.js');
+var ProfileComponent = require('./components/ProfileComponent.js');
+var UserSettingsComponent = require('./components/UserSettingsComponent.js');
+var MessageCenterComponent = require('./components/MessageCenterComponent.js');
 
 var Router = Backbone.Router.extend({
 	routes: {
 		'': 'home',
-		'register': 'register'
+		'register': 'register',
+		'login': 'login',
+		'profile/:userId': 'profile',
+		'user-settings/:userId': 'userSettings',
+		'message-center/:userId': 'messageCenter'
 	},
 	home: function home() {
 		ReactDOM.render(React.createElement(NavComponent, { router: this }), nav);
@@ -32657,13 +33449,49 @@ var Router = Backbone.Router.extend({
 	register: function register() {
 		ReactDOM.render(React.createElement(NavComponent, { router: this }), nav);
 		ReactDOM.render(React.createElement(RegisterComponent, { router: this }), main);
+	},
+	login: function login() {
+		ReactDOM.render(React.createElement(NavComponent, { router: this }), nav);
+		ReactDOM.render(React.createElement(LoginComponent, { router: this }), main);
+	},
+	profile: function profile(userId) {
+		ReactDOM.render(React.createElement(NavComponent, { router: this }), nav);
+		ReactDOM.render(React.createElement(ProfileComponent, { router: this, profile: userId, user: Parse.User.current() }), main);
+	},
+	userSettings: function userSettings(userId) {
+		ReactDOM.render(React.createElement(NavComponent, { router: this }), nav);
+		ReactDOM.render(React.createElement(UserSettingsComponent, { router: this, profile: userId }), main);
+	},
+	messageCenter: function messageCenter(userId) {
+		ReactDOM.render(React.createElement(NavComponent, { router: this }), nav);
+		ReactDOM.render(React.createElement(MessageCenterComponent, { router: this, profile: userId }), main);
 	}
 });
 
 var r = new Router();
 Backbone.history.start();
 
-},{"./components/HomeComponent.js":162,"./components/NavComponent.js":163,"./components/RegisterComponent.js":164,"backbone":1,"jquery":29,"react":160,"react-dom":31}]},{},[165])
+function getRandom(min, max) {
+	return Math.random() * (max - min) + min;
+}
+
+function getRandomSeries() {
+	var number = Math.round(getRandom(1, 3));
+	if (number == 1) {
+		return 'The Next Generation';
+	} else if (number == 2) {
+		return 'Deep Space Nine';
+	} else if (number == 3) {
+		return 'Voyager';
+	}
+}
+
+var getRandomSeason = getRandom(1, 7);
+var getRandomEpisode = getRandom(1, 26);
+
+console.log('Series: ' + getRandomSeries() + ' Season ' + Math.round(getRandomSeason) + ' Episode ' + Math.round(getRandomEpisode));
+
+},{"./components/HomeComponent.js":162,"./components/LoginComponent.js":163,"./components/MessageCenterComponent.js":164,"./components/NavComponent.js":165,"./components/ProfileComponent.js":166,"./components/RegisterComponent.js":167,"./components/UserSettingsComponent.js":168,"backbone":1,"jquery":29,"react":160,"react-dom":31}]},{},[169])
 
 
 //# sourceMappingURL=bundle.js.map

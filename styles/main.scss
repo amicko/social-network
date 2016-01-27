@@ -1,9 +1,21 @@
 @import 'navBar',
 		'homepage',
-		'register';
+		'register',
+		'login',
+		'profile',
+		'userSettings',
+		'messageCenter';
 
 body {
 	background-color: #4C4743;
 	margin-top: 0;
 	font-family: 'Abril Fatface', cursive;
+	padding: 0;
+	margin-left: 0;
+	margin-right: 0;
+
+	main {
+		margin: 0;
+		padding: 0;
+	}
 }

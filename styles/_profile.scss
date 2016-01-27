@@ -1,0 +1,516 @@
+.profile {
+	background-color: #E3EAF0;
+	color: #7390A8;
+	padding-bottom: 1px;
+	width: 480px;
+	margin: 0 auto;
+
+	#header {
+		background-color: #67625E;
+		height: 10em;
+		width: 480px;
+		margin: 0 auto;
+
+		.profilePic {
+			position: relative;
+			top: 4em;
+			left: 1em;
+			float: left;
+			border: 1px solid;
+			border-radius: 10px;
+			height: 8em;
+			width: 8em;
+
+		}
+
+		#userName {
+			position: relative;
+			top: 4em;
+			float: left;
+			margin-left: 2em;
+			font-size: 30px;
+		}
+	}
+
+	#addFriend {
+		// display: none;
+		float: right;
+		position: relative;
+		right: 2em;
+		top: -8em;
+	}
+
+	#leftProfile {
+		margin-top: 3em;
+
+		#aboutMe {
+			background-color: #DDDDDD;
+			font-size: 15px;
+			width: 450px;
+			margin: 1em auto;
+
+			.aboutMeSpan {
+				font-size: 20px;
+			}
+		}
+
+		#friends {
+			background-color: #DDDDDD;
+			width: 450px;
+			margin: 0 auto;
+
+			.friendsSpan {
+				font-size: 20px;
+			}
+
+			a {
+
+
+				img {
+					height: 3em;
+					width: 3em;
+					margin: 4px;
+					border: 1px solid #000;
+					border-radius: 5px;
+				}
+			}
+		}
+	}
+
+	#rightProfile {
+		margin: 1em auto;
+
+		.newPostButton {
+			display: block;
+			width: 200px;
+			margin: 1em auto;
+			// margin-left: 140px;
+		}
+
+		.newPostShow {
+			// position: absolute;
+			// top: 20em;
+			display: block;
+			background-color: grey;
+			height: 3em;
+			// width: 100%;
+			animation-duration: 2s;
+			animation-name: newPostDrop;
+
+			button {
+				height: 2.5em;
+				margin-top: 0.5em;
+				margin-left: 1em;
+			}
+		}
+
+		@keyframes newPostDrop {
+			from {
+				height: 0;
+				overflow: hidden;
+				padding-left: 100%;
+			}
+
+			to {
+				height: 3em;
+				overflow: hidden;
+				padding-left: 0;
+			}
+		}
+
+		.newPostHide {
+			display: none;
+			width: 460px;
+			background-color: grey;
+			padding-left: 200px;
+		}
+
+		.newPostTextShow {
+			position: absolute;
+			top: 3em;
+			left: 0;
+			background-color: blue;
+			background-color: hsla(0, 0%, 0%, 0.75);
+			display: block;
+			animation-duration: 2s;
+			animation-name: slidein;
+			height: 80em;
+			width: 100%;
+			// margin: 1em;
+			overflow: hidden;
+
+			.newPostTextArea {
+				display: block;
+				width: 80%;
+				height: 30em;
+				margin: 3em auto 1em auto;
+				font-size: 20px;
+			}
+
+			button {
+				width: 30%;
+				margin: 10%;
+			}
+		}
+
+		@keyframes slidein {
+			from {
+				margin-bottom: 12em;
+				height: 0;
+			}
+
+			to {
+				// margin: 1em;
+				// width: 430px;
+				height: 80em;
+		 	}
+		}
+
+		.newPostTextHide {
+			display: none;
+		}
+
+		.newPostImageUploadShow {
+			position: absolute;
+			top: 3em;
+			left: 0;
+			background-color: blue;
+			background-color: hsla(0, 0%, 0%, 0.75);
+			display: none;
+			animation-duration: 2s;
+			animation-name: slidein;
+			height: 80em;
+			width: 100%;
+			overflow: hidden;
+
+			// input[type='file'] {
+			// 	display: block;
+			// 	// width: 70%;
+			// 	// margin: 5em auto 1em auto;
+			// 	position: relative;
+			// 	overflow: hidden;
+			// 	margin: 10px;
+			// 	background-color: #BDBDBD;
+			// 	height: 200px;
+			// 	width: 200px;
+			// 	text-align: center;
+			// }
+
+			#imageUpload {
+				position: absolute;
+				top: 3.4em;
+				left: 36%;
+				margin: 0;
+				padding: 0;
+				font-size: 20px;
+				cursor: auto;
+				opacity: 0;
+				filter: alpha(opacity=0);
+				height: 1em;
+				width: 28%;
+				text-align: center;
+				z-index: 99;
+			}
+
+			.underImageBtn {
+				position: relative;
+				top: 20em;
+				width: 30%;
+				margin: 10%;
+			}
+
+			#fakeImageUpload {
+				position: absolute;
+				top: 5em;
+				left: 36%;
+				margin: 0;
+				width: 28%;
+			}
+
+			#uploadExample {
+				width: 20%;
+				margin: 0 40%;
+			}
+		}
+
+		.newPostImageUploadHide {
+			display: none;
+		}
+
+		.newPostImageURLShow {
+			position: absolute;
+			top: 3em;
+			left: 0;
+			background-color: blue;
+			background-color: hsla(0, 0%, 0%, 0.75);
+			display: block;
+			animation-duration: 2s;
+			animation-name: slidein;
+			height: 80em;
+			width: 100%;
+			overflow: hidden;
+
+			#imageURL {
+				width: 50%;
+				margin: 5em 25%;
+				line-height: 1em;
+				font-size: 28px;
+			}
+
+			.underImageBtn {
+				width: 30%;
+				margin: 10%;
+			}
+
+		}
+
+		.newPostImageURLHide {
+			display: none;
+		}
+
+		.post {
+			background-color: #DDDDDD;
+			width: 450px;
+			margin: 1em auto;
+			overflow: hidden;
+
+			.postThumb {
+				width: 3em;
+				float: left;
+				border: 1px solid;
+				border-radius: 10px;
+				margin-left: 0.25em;
+				margin-top: 0.25em;
+				border: 1px solid #000;
+			}
+
+			.postPoster {
+				float: left;
+				margin-left: 0.5em;
+			}
+
+			.postCaption {
+				clear: both;
+			}
+
+			.postImage {
+				width: 80%;
+				margin-left: 10%;
+			}
+		}
+	}
+}
+
+@media screen and(min-width: 485px) {
+	.profile {
+		// background-color: #E3EAF0;
+		// color: #7390A8;
+		// padding-bottom: 1px;
+		width: 700px;
+		overflow: hidden;
+		// margin: 0 auto;
+
+		#header {
+			// background-color: #67625E;
+			// height: 10em;
+			width: 700px;
+			// margin: 0 auto;
+
+			.profilePic {
+				// position: relative;
+				// top: 4em;
+				// left: 1em;
+				// float: left;
+				// border: 1px solid;
+				// border-radius: 10px;
+				// height: 8em;
+				// width: 8em;
+
+			}
+
+			#userName {
+				// position: relative;
+				// top: 4em;
+				// float: left;
+				// margin-left: 2em;
+				// font-size: 30px;
+			}
+		}
+
+		#leftProfile {
+			float: left;
+			width: 320px;
+			margin-left: 1em;
+			margin-right: 1em;
+			overflow: hidden;
+			// margin-top: 3em;
+
+			#aboutMe {
+				// background-color: #DDDDDD;
+				// font-size: 15px;
+				width: 100%;
+				// margin: 1em auto;
+
+				.aboutMeSpan {
+					// font-size: 20px;
+				}
+			}
+
+			#friends {
+				// background-color: #DDDDDD;
+				width: 100%;
+				// margin: 0 auto;
+
+				.friendsSpan {
+					// font-size: 20px;
+				}
+
+				a {
+
+
+					img {
+						// height: 3em;
+						// width: 3em;
+						// margin: 4px;
+						// border: 1px solid #000;
+						// border-radius: 5px;
+					}
+				}
+			}
+		}
+
+		#rightProfile {
+			float: right;
+			height: 35em;
+			width: 320px;
+			margin-right: 1em;
+			overflow: scroll;
+			// margin: 1em auto;
+
+			.newPostButton {
+				margin-top: 10px
+				// display: block;
+				// width: 200px;
+				// margin: 0 auto;
+				// margin-left: 140px;
+			}
+
+			.newPostShow {
+				// display: block;
+				// background-color: grey;
+				height: 5.5em;
+				animation-duration: 2s;
+				animation-name: newPostDrop;
+
+				button {
+					// height: 2.5em;
+					// margin-top: 0.5em;
+					// margin-left: 1em;
+				}
+			}
+
+			@keyframes newPostDrop {
+				from {
+					height: 0;
+					overflow: hidden;
+					padding-left: 100%;
+				}
+
+				to {
+					height: 5.5em;
+					overflow: hidden;
+					padding-left: 0;
+				}
+			}
+
+			.newPostHide {
+				// display: none;
+				// width: 460px;
+				// background-color: grey;
+				// padding-left: 200px;
+			}
+
+			.newPostTextShow {
+				position: absolute;
+				top: 3.5em;
+				width: 100%;
+				height: 48em;
+
+				.newPostTextArea {
+
+
+				}
+
+				button {
+					// display: none;
+					width: 15%;
+					margin: -10em 17.5%;
+				}
+			}
+
+			@keyframes slidein {
+				from {
+					margin-bottom: 12em;
+					height: 0;
+				}
+
+				to {
+					// margin: 1em;
+					width: 100%;
+					height: 47em;
+			 	}
+			}
+
+			.newPostTextHide {
+				// display: none;
+			}
+
+			.newPostImageUploadShow {
+				position: absolute;
+				top: 3.5em;
+				width: 100%;
+				height: 48em;
+			}
+
+			.newPostImageUploadHide {
+				// display: none;
+			}
+
+			.newPostImageURLShow {
+				position: absolute;
+				top: 3.5em;
+				width: 100%;
+				height: 48em;
+			}
+
+			.newPostImageURLHide {
+				// display: none;
+			}
+
+			.post {
+				// background-color: #DDDDDD;
+				width: 100%;
+				// margin: 1em auto;
+
+				.postThumb {
+					// width: 3em;
+					// float: left;
+					// border: 1px solid;
+					// border-radius: 10px;
+					// margin-left: 0.25em;
+					// margin-top: 0.25em;
+					// border: 1px solid #000;
+				}
+
+				.postPoster {
+					// float: left;
+					// margin-left: 0.5em;
+				}
+
+				.postCaption {
+					// clear: both;
+				}
+			}
+		}
+	}
+}
