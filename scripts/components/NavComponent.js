@@ -7,7 +7,7 @@ module.exports = React.createClass({
 		if(!(Parse.User.current())) {
 			return (
 			<div className="navBar">
-				<img src="http://www.mma-hk.cz/image/data/mma-logo-lev.png" />
+				<img src="../images/stock-vector-lion-head-icon-94999156.jpg" />
 				<span id="title"><a href="#">The Lion's Den</a></span>
 				<ul id="navBarListRight">
 					<li><a href="#register">Register</a></li>

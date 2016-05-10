@@ -14,8 +14,8 @@
   .navBar #title {
     display: block;
     float: left;
-    margin-top: 0.25em;
-    margin-left: -1.5em;
+    margin-top: 0.45em;
+    margin-left: 0.25em;
     font-size: 22px;
     font-family: 'Abril Fatface', cursive; }
     .navBar #title a {
