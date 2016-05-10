@@ -32061,7 +32061,7 @@ module.exports = React.createClass({
 			return React.createElement(
 				"div",
 				{ className: "navBar" },
-				React.createElement("img", { src: "http://www.mma-hk.cz/image/data/mma-logo-lev.png" }),
+				React.createElement("img", { src: "../images/stock-vector-lion-head-icon-94999156.jpg" }),
 				React.createElement(
 					"span",
 					{ id: "title" },
