@@ -3,7 +3,9 @@ var ReactDOM = require('react-dom');
 var Backbone = require('backbone');
 var $ = require('jquery');
 
-Parse.initialize("nioeBPmBY0PpjU6RagvScJ264gcRkC4Xbz43A4EP", "0OQW1Gf06iEyq9OzxBw8iLcC0Gjv3JkM61rtoiap");
+// Parse.initialize("nioeBPmBY0PpjU6RagvScJ264gcRkC4Xbz43A4EP", "0OQW1Gf06iEyq9OzxBw8iLcC0Gjv3JkM61rtoiap");
+Parse.initialize('nioeBPmBY0PpjU6RagvScJ264gcRkC4Xbz43A4EP','unused');
+Parse.serverURL = 'https://lions-den.herokuapp.com/';
 
 var nav = document.getElementById('nav');
 var main = document.getElementById('main');
@@ -53,6 +55,17 @@ var Router = Backbone.Router.extend({
 
 var r = new Router();
 Backbone.history.start();
+
+//New Parse/Heroku Code Examples
+// var obj = new Parse.Object('GameScore');
+// obj.set('score',1337);
+// obj.save().then(function(obj) {
+//   console.log(obj.toJSON());
+//   var query = new Parse.Query('GameScore');
+//   query.get(obj.id).then(function(objAgain) {
+//     console.log(objAgain.toJSON());
+//   }, function(err) {console.log(err); });
+// }, function(err) { console.log(err); });
 
 function getRandom(min, max) {
 	return Math.random() * (max - min) + min;
