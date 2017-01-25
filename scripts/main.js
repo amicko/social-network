@@ -5,7 +5,7 @@ var $ = require('jquery');
 
 // Parse.initialize("nioeBPmBY0PpjU6RagvScJ264gcRkC4Xbz43A4EP", "0OQW1Gf06iEyq9OzxBw8iLcC0Gjv3JkM61rtoiap");
 Parse.initialize('nioeBPmBY0PpjU6RagvScJ264gcRkC4Xbz43A4EP','unused');
-Parse.serverURL = 'https://lions-den.herokuapp.com/';
+Parse.serverURL = 'https://lions-den.herokuapp.com/parse';
 
 var nav = document.getElementById('nav');
 var main = document.getElementById('main');
