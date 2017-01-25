@@ -33,18 +33,6 @@ module.exports = React.createClass({
 	},
 	onLogin: function(e) {
 		e.preventDefault();
-		// var userDate = this.refs.birthMonth.value + '/' + this.refs.birthDay.value + '/' + this.refs.birthYear.value;
-		// var currentDate = new Date();
-		// var month = currentDate.getMonth()+1;
-		// var day = currentDate.getDate();
-		// var year = currentDate.getFullYear();
-		// currentDate = month + '/' + day + '/' + year;
-		// if(userDate == currentDate) {
-		// 	console.log(true);
-		// }
-		// else {
-		// 	console.log(false);
-		// }
 		var that = this;
 		if(this.refs.email.value == false) {
 			this.setState({

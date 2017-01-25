@@ -19,7 +19,6 @@ var minifyCss = require('gulp-minify-css');
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var imagemin = require('gulp-imagemin');
-var ignore = require('gulp-ignore');
 
 // add custom browserify options here
 var customOpts = {
@@ -87,24 +86,9 @@ gulp.task('build', ['clean', 'copy', 'js', 'css', 'sass', 'images']);
 gulp.task('clean', function(cb) {
 	var argv = validateCli();
 
-	var stuffToClean = [
-		'images',
-		'node_modules',
-		'scripts',
-		'styles',
-		'.gitignore',
-		'index.html',
-		'package.json',
-		'README.md'
-	];
-
-	stuffToClean = stuffToClean.map(function(p) {
-		return path.join(argv.o, p);
-	});
-
-	return gulp.src(stuffToClean, {read: false})
+	return gulp.src(argv.o, {read: false})
 	.pipe(prompt.confirm('The output directory "'+path.join(__dirname, argv.o)+'" will be removed. Are you sure you want to do this?'))
-	.pipe(rimraf({ force: true }));
+	.pipe(rimraf());
 });
 
 gulp.task('copy', ['clean'], function() {
@@ -116,10 +100,9 @@ gulp.task('copy', ['clean'], function() {
 gulp.task('js', ['copy'], function() {
 	var argv = validateCli();
 
-	var p = browserify({ entries: ['./scripts/main.js'], debug: true })
+	var p = browserify('scripts/main.js', { debug: true })
 	.transform(babelify)
 	.bundle()
-	.on('error', gutil.log.bind(gutil, 'Browserify Error'))
 	.pipe(source('bundle.js'))
 	.pipe(buffer())
 	.on('error', function (err) { console.log('Error : ' + err.message); });
