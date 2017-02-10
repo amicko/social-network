@@ -1,4 +1,5 @@
 var React = require('react');
+var Parse = require('parse');
 
 module.exports = React.createClass({
 	render: function() {

@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Backbone = require('backbone');
+var Parse = require('parse');
 var $ = require('jquery');
 
 // Parse.initialize("nioeBPmBY0PpjU6RagvScJ264gcRkC4Xbz43A4EP", "0OQW1Gf06iEyq9OzxBw8iLcC0Gjv3JkM61rtoiap");
